@@ -2,6 +2,8 @@ import argparse
 import sys
 import os
 import audio_metadata
+from audio_metadata.formats.mp3 import MP3
+from audio_metadata.formats.wave import WAVE
 
 demo_file = "/home/leonidas/Downloads/'[FREE] BABY KEEM TYPE BEAT 2023 - LORE.mp3'"
 
@@ -27,17 +29,13 @@ class FileChecker:
         mydef = sys._getframe().f_code.co_name
         if self.file_type == "mp3":
             if self.file.endswith(".mp3"):
-                print(f"File is an mp3: {self.file.split('/')[-1]}")
                 return True
             else:
-                print(f"File is not an mp3: {self.file.split('/')[-1]}")
                 return False
         elif self.file_type == "wav":
             if self.file.endswith(".wav"):
-                print(f"File is an wav: {self.file.split('/')[-1]}")
                 return True
             else:
-                print(f"File is not an wav: {self.file.split('/')[-1]}")
                 return False
         else:
             print(f"The file type is not supported: {self.file_type}")
@@ -53,13 +51,24 @@ class FileChecker:
         print("Metadata:")
         print("=====================================")
         format_file = self.determine_file_type()
-        self.metadata = self.read_file(format_file=format_file)
+        print(f"Format: {format_file}")
+        if self.file_type == "mp3" and format_file == MP3:
+           
+            mp3_file = self.read_file(self.file)
+            print("Your file is an mp3")
+            print(f"MP3-INFO: {mp3_file}") 
+        elif self.file_type == "wav" and format_file == WAVE:
+            wav_file = self.read_file(self.file)
+            print("Your file is an mp3")
+            print(f"WAV: {wav_file}")
+        else:
+            raise Exception(f"Your file is not the type specified: {self.file_type}")
+
 
     def fileExists(self):
         mydef = sys._getframe().f_code.co_name
         try:
             if os.path.exists(self.file):
-                print(f"File exists: {self.file}")
                 return True
             else:
                 raise FileNotFoundError(f"File does not exist: {self.file}")
@@ -78,15 +87,10 @@ class FileChecker:
             print(f"Error in {mydef}: {e}")
             return False
 
-    def read_file(self, format_file):
+    def read_file(self, file):
         mydef = sys._getframe().f_code.co_name
         try:
-            data = audio_metadata.load(self.file)
-            print({"File": format_file == data})
-            if format_file == data:
-                return data
-            else:
-                raise Exception(f"File type not supported: {self.file_type}")
+            return audio_metadata.load(file)
         except Exception as e:
             print(f"Error in {mydef}: {e}")
             return False
@@ -96,11 +100,10 @@ class FileChecker:
         try:
             if self.file.endswith(".mp3"):
                 data = audio_metadata.determine_format(self.file)
-                return data.parse(self.file)
+                return data
             elif self.file.endswith(".wav"):
                 data = audio_metadata.determine_format(self.file)
-                print(data.parse(self.file))  
-                return data.parse(self.file)
+                return data
             else:
                 raise Exception(f"File type not supported: {self.file_type}")
         except Exception as e:
@@ -117,6 +120,8 @@ def main(file, file_type, args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", help="The path of the file to check")
-    parser.add_argument("-t", "--file_type", help="The type of file to check")
+    parser.add_argument("-t", "--type", help="The type of file to check")
+    parser.add_argument("-z", "--zip", help="Compress all files in a zip")
+    parser.add_argument("-r", "--rename", help="Rename all files in a directory with this pattern: 'Name - Date - BPM - Key'")
     args = parser.parse_args()
-    main(args.file, args.file_type, args)
+    main(args.file, args.type, args)
