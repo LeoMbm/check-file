@@ -38,20 +38,22 @@ class FileChecker:
                 self.files = ask_files()
 
             for file in self.files:
-                if self.filesExists(file) and self.isFile(file):
+                if self.fileExist(file) and self.isFile(file):
                     if self.check_files_type(file):                        
                         self.print_file(file=file)
-            if click.confirm('Do you want to rename the file?', default=False):
-                self.rename_file(self.results)
-            if click.confirm('Do you want to zip the files?', default=False):
-                zip_name = click.prompt("Enter the name of the zip file: ", default="results")
-                self.zip_files(self.results, zip_name)
-            self.generate_table(self.results)
+
+            if len(self.results) > 0:
+                if click.confirm('Do you want to rename the file?', default=False):
+                    self.rename_file(self.results)
+                if click.confirm('Do you want to zip the files?', default=False):
+                    zip_name = click.prompt("Enter the name of the zip file: ", default="results")
+                    self.zip_files(self.results, zip_name)
+                self.generate_table(self.results)
             
         except Exception as e:
             print(f"Error: {e}")
 
-    def filesExists(self, file):
+    def fileExist(self, file):
         mydef = sys._getframe().f_code.co_name
         try:
             if os.path.exists(file):
@@ -177,12 +179,18 @@ class FileChecker:
         try:
             for file in files_data:
                 formatted_name = f"{file.get('file')}-{file.get('bpm')}BPM-{file.get('key')}-{file.get('date')}"
+                if ".mp3" in file.get('file') or ".wav" in file.get('file'):
+                    formatted_name = f"{file.get('file'.split('.')[0])}-{file.get('bpm')}BPM-{file.get('key')}-{file.get('date')}"
+
+                parent_dir = os.path.dirname(file.get('full_path'))
+                console.print(f"Your can find your file here: {os.path.join(parent_dir, formatted_name)}")
+              
                 if self.files_type == "mp3":
                     if file.get('file').endswith(".mp3"):
-                        os.rename(file.get('full_path'), f"{formatted_name}.mp3")
+                        os.rename(file.get('full_path'), f"{os.path.join(parent_dir, formatted_name)}.mp3")
                 elif self.files_type == "wav":
                     if file.get('file').endswith(".wav"):
-                        os.rename(file.get('full_path'), f"{formatted_name}.wav")
+                        os.rename(file.get('full_path'), f"{os.path.join(parent_dir, formatted_name)}.wav")
 
                     else:
                         raise Exception(f"File type not supported: {self.files_type}")
@@ -203,7 +211,7 @@ class FileChecker:
         song_key = f"{key}{scale.capitalize()}"
         if self.files_type == "mp3" and format_file == MP3:        
             mp3_file = self.read_file(file)
-            name_format = f"{mp3_file['filepath']}-{bpm}BPM-{song_key}-{creation_time_format}"
+            name_format = f"{mp3_file['filepath'].split('/')[-1].split('.')[0]}-{bpm}BPM-{song_key}-{creation_time_format}"
             console.print(f"Your file will be renamed to: {name_format}.mp3")
             self.results.append({"file": mp3_file['filepath'].split('/')[-1], 
                         "bpm": str(bpm),
@@ -248,10 +256,9 @@ class FileChecker:
             parent_dir = os.path.dirname(files[0].get('full_path'))
             with ZipFile(f"{os.path.join(parent_dir, zip_name)}.zip", 'w') as zipObj:
                 for file in files:
-                    # print(file)
-                    if self.filesExists(file.get('new_path')):
+                    if self.fileExist(file.get('new_path')):
                         zipObj.write(file.get('new_path'), arcname=file.get('file'))
-                    elif self.filesExists(file.get('full_path')):
+                    elif self.fileExist(file.get('full_path')): 
                         zipObj.write(file.get('full_path'), arcname=file.get('file'))
                     print(f"File {file.get('file')} added to zip")
         except Exception as e:
@@ -270,9 +277,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", help="The path of the file to check")
     parser.add_argument("-t", "--type", help="The type of file to check")
-    parser.add_argument("-z", "--zip", help="Compress all files in a zip")
-    parser.add_argument("-r", "--rename", help="Rename all files in a directory with this pattern: 'Name - Date - Key - BPM'")
     args = parser.parse_args()
     start_time = time.time()
     main(args.file, args.type, args)
-    print("--- %s seconds ---" % round((time.time() - start_time), 4))
+    print("--- %s seconds ---" % round((time.time() - start_time), 3))
