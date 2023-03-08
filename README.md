@@ -11,7 +11,7 @@
  - Give a name to the zip
 
 ## Why Not ?
-- Choose files in directory from terminal
+- Browse Folder
 - Send by email/wetransfer directly ?
 
 
