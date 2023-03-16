@@ -43,11 +43,23 @@ class FileChecker:
                         self.print_file(file=file)
 
             if len(self.results) > 0:
+                file_found = False
+                files_to_zip = []
                 if click.confirm('Do you want to rename the file?', default=False):
                     self.rename_file(self.results)
                 if click.confirm('Do you want to zip the files?', default=False):
                     zip_name = click.prompt("Enter the name of the zip file: ", default="results")
-                    self.zip_files(self.results, zip_name)
+                    for result in self.results:
+                        if self.fileExist(result.get("full_path")):
+                            file_found = True
+                            data = {"path": result.get("full_path"), "name": result.get('new_name')}
+                            files_to_zip.append(data)
+                        elif self.fileExist(result.get("new_path")):
+                            file_found = True
+                            data = {"path": result.get("new_path"), "name": result.get('new_name')}
+                            files_to_zip.append(data)
+                    if file_found:
+                        self.zip_files(files_to_zip, zip_name)
                 self.generate_table(self.results)
             
         except Exception as e:
@@ -55,13 +67,9 @@ class FileChecker:
 
     def fileExist(self, file):
         mydef = sys._getframe().f_code.co_name
-        try:
-            if os.path.exists(file):
-                    return True
-            else:
-                raise FileNotFoundError(f"File does not exist: {file}")
-        except FileNotFoundError as e:
-            # print(f"Error in {mydef}: {e}")
+        if os.path.exists(file):
+            return True
+        else:
             return False
 
     def isFile(self, file):
@@ -86,7 +94,6 @@ class FileChecker:
             else:
                 raise Exception (f"{self.files.split('/')[-1]} is not a {self.files_type} file")
         
-
     def read_file(self, file):
         mydef = sys._getframe().f_code.co_name
         try:
@@ -178,18 +185,15 @@ class FileChecker:
         mydef = sys._getframe().f_code.co_name
         try:
             for file in files_data:
-                formatted_name = f"{file.get('file')}-{file.get('bpm')}BPM-{file.get('key')}-{file.get('date')}"
-                if ".mp3" in file.get('file') or ".wav" in file.get('file'):
-                    formatted_name = f"{file.get('file'.split('.')[0])}-{file.get('bpm')}BPM-{file.get('key')}-{file.get('date')}"
-
+                formatted_name = f"{file.get('file').split('.')[0]}-{file.get('bpm')}BPM-{file.get('key')}-{file.get('date')}"
                 parent_dir = os.path.dirname(file.get('full_path'))
-                console.print(f"Your can find your file here: {os.path.join(parent_dir, formatted_name)}")
+                console.print(f"Your can find your file here: {os.path.join(parent_dir, formatted_name)}.mp3")
               
                 if self.files_type == "mp3":
-                    if file.get('file').endswith(".mp3"):
+                    if file.get('file'):
                         os.rename(file.get('full_path'), f"{os.path.join(parent_dir, formatted_name)}.mp3")
                 elif self.files_type == "wav":
-                    if file.get('file').endswith(".wav"):
+                    if file.get('file'):
                         os.rename(file.get('full_path'), f"{os.path.join(parent_dir, formatted_name)}.wav")
 
                     else:
@@ -218,7 +222,8 @@ class FileChecker:
                         "key": str(song_key),
                         "date": str(creation_time_format),
                         "full_path": mp3_file['filepath'],
-                        "new_path": f"{mp3_file['filepath']}-{bpm}BPM-{song_key}-{creation_time_format}.mp3"})
+                        "new_path": f"{os.path.dirname(mp3_file['filepath'])}/{mp3_file['filepath'].split('/')[-1].split('.')[0]}-{bpm}BPM-{song_key}-{creation_time_format}.mp3",
+                      "new_name": f"{name_format}.mp3"})
         elif self.files_type == "wav" and format_file == WAVE:
             wav_file = self.read_file(file)
             name_format = f"{wav_file['filepath']}-{bpm}BPM-{song_key}-{creation_time_format}"
@@ -228,7 +233,8 @@ class FileChecker:
                         "key": str(song_key),
                         "date": str(creation_time_format),
                         "full_path": wav_file['filepath'],
-                        "new_path": f"{wav_file['filepath']}-{bpm}BPM-{song_key}-{creation_time_format}.wav"})
+                        "new_path": f"{os.path.dirname(wav_file['filepath'])}/{wav_file['filepath'].split('/')[-1].split('.')[0]}-{bpm}BPM-{song_key}-{creation_time_format}.wav",
+                        "new_name": f"{name_format}.wav"})
                     
         else:
             raise Exception(f"Your file is not the type specified: {self.files_type}")
@@ -253,14 +259,11 @@ class FileChecker:
     def zip_files(self, files, zip_name):
         mydef = sys._getframe().f_code.co_name
         try:
-            parent_dir = os.path.dirname(files[0].get('full_path'))
+            parent_dir = os.path.dirname(files[0].get('path'))
             with ZipFile(f"{os.path.join(parent_dir, zip_name)}.zip", 'w') as zipObj:
                 for file in files:
-                    if self.fileExist(file.get('new_path')):
-                        zipObj.write(file.get('new_path'), arcname=file.get('file'))
-                    elif self.fileExist(file.get('full_path')): 
-                        zipObj.write(file.get('full_path'), arcname=file.get('file'))
-                    print(f"File {file.get('file')} added to zip")
+                    zipObj.write(file.get('path'), arcname=file.get('name'))
+                    print(f"File {file.get('path')} added to zip")
         except Exception as e:
             print(f"Error in {mydef}: {e}")
             return False

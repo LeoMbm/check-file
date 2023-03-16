@@ -1,14 +1,20 @@
-# Tools 
+# IDK-NAME
 
+*Slogan cool to come*
 
-> In progress
+## Description
 
-## What ?
+This application allows composers to easily manage their music files. With just a few clicks, it is possible to check that the files are in mp3 or wav format, rename the files according to a specific format (Name-Date-BPM-Key), and compress multiple files at once. In the future, it may be possible to directly send the compressed files by email or wetransfer via the platform.
 
- - Check if file is really MP3 or WAV.
- - Rename it with Name-Date-BPM-KEY.
- - If Multiple files zip them
- - Give a name to the zip
+## Features
+
+- Verification of file format (mp3 or wav)
+- Automatic renaming of files according to the Name-Date-BPM-Key format
+- Compression of multiple files at once
+
+## Base
+
+The application is divided into two parts: an online part that can be used with a web application and an offline part that can be used from the terminal.
 
 ## Why Not ?
 - Browse Folder
