@@ -12,12 +12,11 @@ import essentia.standard as es
 import essentia.streaming as ess
 import essentia
 import click
-from utils import ask_files
 from rich.console import Console
 from rich.table import Table
 from rich.live import Live
 from zipfile import ZipFile, ZIP_DEFLATED
-
+from utils.utils import ask_files
 
 console = Console()
 
