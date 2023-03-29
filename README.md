@@ -1,4 +1,4 @@
-# IDK-NAME
+# BeatsTemp
 
 *Slogan cool to come*
 

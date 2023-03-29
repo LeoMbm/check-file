@@ -16,7 +16,12 @@ from rich.console import Console
 from rich.table import Table
 from rich.live import Live
 from zipfile import ZipFile, ZIP_DEFLATED
-from utils.utils import ask_files
+from pick import pick
+import os
+from pathlib import Path
+from tkinter.filedialog import askopenfilenames
+
+BASE_DIR = Path.home()
 
 console = Console()
 
@@ -34,7 +39,7 @@ class FileChecker:
             if files_type not in ["mp3", "wav"]:
                 raise Exception("File type not supported")
             if files == None:
-                self.files = ask_files()
+                self.files = self.ask_files(files_type)
 
             for file in self.files:
                 if self.fileExist(file) and self.isFile(file):
@@ -63,6 +68,11 @@ class FileChecker:
             
         except Exception as e:
             print(f"Error: {e}")
+
+    
+    def ask_files(self, file_type=None):
+        dialog = askopenfilenames(defaultextension=file_type, title="Select your files",initialdir=BASE_DIR)
+        return list(dialog)
 
     def fileExist(self, file):
         mydef = sys._getframe().f_code.co_name
@@ -268,9 +278,13 @@ class FileChecker:
             return False
 
 
-def main(file, files_type, args):
+def run():
     try:
-        FileChecker(args, file, files_type)
+        parser = argparse.ArgumentParser()
+        parser.add_argument("-f", "--file", help="The path of the file to check")
+        parser.add_argument("-t", "--type", help="The type of file to check")
+        args = parser.parse_args()
+        FileChecker(args, args.file, args.type)
     except Exception as e:
         print(f"Error in main: {e}")
   
@@ -281,5 +295,5 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--type", help="The type of file to check")
     args = parser.parse_args()
     start_time = time.time()
-    main(args.file, args.type, args)
+    run(args.file, args.type, args)
     print("--- %s seconds ---" % round((time.time() - start_time), 3))
