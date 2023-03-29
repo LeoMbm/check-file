@@ -26,7 +26,7 @@ if %errorlevel% neq 0 (
 REM Installe le fichier .tar.gz depuis le dossier dist
 echo Installation de l'application en cours...
 cd dist
-pip install nom_du_fichier.tar.gz
+python3 -m pip install beatstemp-0.1.tar.gz
 cd ..
 echo Installation terminée.
 
