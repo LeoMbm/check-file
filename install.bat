@@ -7,7 +7,7 @@ if %errorlevel% neq 0 (
   powershell -Command "Invoke-WebRequest -OutFile python310.exe https://www.python.org/ftp/python/3.10.0/python-3.10.0-amd64.exe"
   echo Installation de Python 3.10...
   start /wait python310.exe /quiet InstallAllUsers=1 PrependPath=1
-  setx PATH "%PATH%;C:\Program Files\Python310" 
+  SETX PATH "%PATH%;%USERPROFILE%\AppData\Local\Programs\Python310\python.exe" /M
 ) else (
     echo Python 3.10 est déjà installé.
 )
