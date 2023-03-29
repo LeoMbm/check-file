@@ -19,9 +19,10 @@ The application is divided into two parts: an online part that can be used with 
 
 ## Installation
 
-To install the application, please run the `install.sh` script located in the root directory of the project. This script will install the necessary dependencies and set up the application for use.
+To install the application, please run the `install.sh` (use `install.bat` for Windows)script located in the root directory of the project. This script will install the necessary dependencies and set up the application for use.
+ > Windows: Run the following command: `./install.sh` in the root directory of the project.
 
-Run the following command: `./install.sh` in the root directory of the project.
+> Linux/MacOs: Run the following command: `./install.sh` in the root directory of the project.
 <!-- ## Installation
 To install the application, follow these steps:
 
