@@ -8,8 +8,7 @@ if %errorlevel% neq 0 (
   echo Installation de Python 3.10...
   start /wait python310.exe /quiet InstallAllUsers=1 PrependPath=1
   setx PATH "%PATH%;C:\Program Files\Python310" 
-)
-else (
+) else (
     echo Python 3.10 est déjà installé.
 )
 
