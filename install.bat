@@ -23,6 +23,7 @@ if %errorlevel% neq 0 (
     echo pip est déjà installé.
 )
 
+cd /d %~dp0..
 REM Installe le fichier .tar.gz depuis le dossier dist
 echo Installation de l'application en cours...
 cd dist
