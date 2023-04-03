@@ -19,6 +19,7 @@ if %errorlevel% neq 0 (
     python get-pip.py
     del get-pip.py
     echo pip installé avec succès.
+    pip install essentia --no-binary :all:
 ) else (
     echo pip est déjà installé.
 )
