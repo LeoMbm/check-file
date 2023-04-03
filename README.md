@@ -1,6 +1,14 @@
 # BeatsTemp
 
 *Slogan cool to come*
+## Table of Contents
+
+- [Description](#description)
+- [Features](#features)
+- [Base](#base)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Help](#help)
 
 ## Description
 
@@ -18,9 +26,10 @@ The application is divided into two parts: an online part that can be used with 
 
 
 ## Installation
+> At this moment, the script only works on Linux and MacOs. Some dependencies is not available on Windows. I'm working on it.
 
-To install the application, please run the `install.sh` (use `install.bat` for Windows)script located in the root directory of the project. This script will install the necessary dependencies and set up the application for use.
- > Windows: Run the following command: `./install.sh` in the root directory of the project.
+To install the application, please run the `install.sh` script located in the root directory of the project. This script will install the necessary dependencies and set up the application for use.
+ <!-- > Windows: Run the following command: `./install.sh` in the root directory of the project. -->
 
 > Linux/MacOs: Run the following command: `./install.sh` in the root directory of the project.
 <!-- ## Installation
@@ -70,3 +79,9 @@ arguments:
   -f FILE, --file FILE  The path of the file to check OPTIONAL
   -t TYPE, --type TYPE  The type of file to check - REQUIRED
   ```
+## Ideas
+
+- [ ] Add a GUI
+- [ ] Add a web application
+- [ ] Add a function to send the compressed files by email or wetransfer via the platform
+- [ ] Add tests

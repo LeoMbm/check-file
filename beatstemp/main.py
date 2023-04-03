@@ -295,5 +295,5 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--type", help="The type of file to check")
     args = parser.parse_args()
     start_time = time.time()
-    run(args.file, args.type, args)
+    run()
     print("--- %s seconds ---" % round((time.time() - start_time), 3))
